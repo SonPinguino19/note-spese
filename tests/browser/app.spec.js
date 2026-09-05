@@ -88,8 +88,8 @@ test('backup scaricabile e dati demo esplicitamente temporanei',async({page})=>{
 });
 test('controlli accessibili e pagina senza overflow orizzontale',async({page})=>{
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);
- await page.getByLabel('Dal',{exact:true}).focus();await page.keyboard.press('Tab');
- await expect(page.getByLabel('Al',{exact:true})).toBeFocused();
  await go(page,'Aggiungi');await expect(page.getByRole('button',{name:'Salva movimento'})).toBeVisible();
+ await page.getByLabel('Descrizione',{exact:true}).focus();await page.keyboard.press('Tab');
+ await expect(page.getByLabel('Importo €',{exact:true})).toBeFocused();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);
 });
