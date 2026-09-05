@@ -6,3 +6,5 @@ dist/
 *.xlsx
 *.pdf
 .DS_Store
+playwright-report/
+test-results/
