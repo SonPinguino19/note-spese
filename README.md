@@ -14,7 +14,7 @@ Prima implementazione dell'app per spese personali e condivise. Interfaccia ital
 
 ## Build e verifiche solo cloud
 
-Pubblicare il contenuto di questa directory nella repository. GitHub Actions installa le dipendenze sul runner, esegue i test e produce l'artefatto `app-build`. Nessuna installazione locale necessaria. La pipeline non è ancora stata eseguita. Non è ancora configurato un deploy.
+Pubblicare il contenuto di questa directory nella repository. GitHub Actions installa le dipendenze sul runner, esegue i test e produce l'artefatto `app-build`. Nessuna installazione locale necessaria. La pipeline esegue test unitari, build, test browser desktop/mobile su una preview temporanea del runner e test SQL/RLS su PostgreSQL temporaneo. I report e gli screenshot sintetici sono disponibili negli artefatti di GitHub Actions. Non è ancora configurato un deploy pubblico.
 
 Le versioni dirette sono fissate. Prima del rilascio, generare e commettere package-lock.json da un runner cloud e sostituire npm install con npm ci per bloccare anche le dipendenze transitive.
 
@@ -46,4 +46,4 @@ La prima policy condivide tutti i movimenti nel nucleo. Prima di dati reali, con
 - Budget, copertura importazioni, ripristino backup e PWA installabile.
 - Migrazione storico verificata: il mapper iniziale corrisponde al foglio 2026, ma le categorie Saldi e Investimenti devono essere controllate prima della conferma. I positivi sono proposti come entrate, quindi eventuali rimborsi richiedono classificazione dedicata nella prossima iterazione.
 
-Non usare ancora come unico archivio: build, deploy e verifiche end-to-end sono da completare. Nessun test eseguito sul PC per rispettare il flusso richiesto.
+Non usare ancora come unico archivio: mancano deploy e verifica dell’integrazione con il progetto Supabase reale. I test browser usano la modalità dimostrativa; i test database simulano le identità Supabase su PostgreSQL isolato. Lo stato di ogni esecuzione è consultabile in GitHub Actions. Nessun test eseguito sul PC per rispettare il flusso richiesto.
