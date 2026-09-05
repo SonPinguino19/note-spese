@@ -8,12 +8,15 @@ alter table public.members enable row level security;
 create policy own_membership on public.members for select to authenticated using(user_id=auth.uid());
 create table public.expenses (
   id uuid primary key,
-  household_id uuid not null default (nullif(current_setting('request.jwt.claims',true),'')::jsonb ->> 'household_id')::uuid,
+  household_id uuid not null,
   date date not null,
   payload jsonb not null,
   created_at timestamptz not null default now(),
-  constraint amount_integer check(jsonb_typeof(payload->'amount')='number' and (payload->>'amount')::numeric=trunc((payload->>'amount')::numeric)),
-  constraint consistent_date check(payload->>'date'=date::text)
+  constraint amount_integer check(coalesce(jsonb_typeof(payload->'amount')='number' and (payload->>'amount')::numeric=trunc((payload->>'amount')::numeric) and abs((payload->>'amount')::numeric) between 1 and 9007199254740991,false)),
+  constraint consistent_date check(coalesce(payload->>'date'=date::text,false)),
+  constraint valid_kind check(coalesce(payload->>'kind' in ('expense','income','refund','investment','transfer','opening'),false)),
+  constraint valid_sign check(case when payload->>'kind' in ('expense','investment') then (payload->>'amount')::numeric<0 when payload->>'kind' in ('income','refund') then (payload->>'amount')::numeric>0 else true end),
+  constraint required_fields check(coalesce(jsonb_typeof(payload->'description')='string' and length(trim(payload->>'description'))>0 and jsonb_typeof(payload->'person')='string' and length(trim(payload->>'person'))>0 and jsonb_typeof(payload->'account')='string' and length(trim(payload->>'account'))>0,false))
 );
 -- Derivazione della famiglia dalla membership, mai da input del browser.
 create function public.assign_household() returns trigger language plpgsql set search_path='' as $$
